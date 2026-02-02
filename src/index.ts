@@ -4,7 +4,7 @@ const app = express();
 
 // routing
 app.get('/', (req: Request, res: Response) => {
-  res.send('Hello World!');
+  res.send('Hello World!Typescript');
 });
 
 const port = process.env.PORT || 3000;
