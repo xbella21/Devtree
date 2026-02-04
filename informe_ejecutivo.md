@@ -68,6 +68,24 @@ npx tsc
 
 He actualizado y guardado este informe con los errores detectados y las soluciones aplicadas o recomendadas.
 
+**Datos de acceso a la base de datos:**
+- **Usuario:** izzobee21
+- **Contraseña:** KjveMzeExDN2VUil
+- **Nombre de la BD:** linktree_node_typescript
+- **Host / Cluster:** cluster0.7dl6y7d.mongodb.net
+- **URI de conexión:** mongodb+srv://izzobee21:KjveMzeExDN2VUil@cluster0.7dl6y7d.mongodb.net/linktree_node_typescript
+- **Archivo donde está la URI:** `src/config/db.ts`
+
+**Cambios adicionales en código y configuración realizados (detallado):**
+- **`src/config/db.ts`:** Nuevo archivo que exporta `connectDB()` y contiene la URI de conexión a MongoDB (usa `mongoose.connect(URL)`).
+- **Dependencias:** Se añadió e instaló `mongoose` en `package.json` (`npm i mongoose`).
+- **`src/server.ts`:** Ahora importa y ejecuta `connectDB()` al arrancar la aplicación (conexión a la BD al inicio).
+- **`src/router.ts`:** Se añadió el endpoint `POST /auth/register` (registro/autenticación básica publicada en router).
+- **`src/index.ts`:** Archivo responsable de arrancar el servidor con `server.listen(port, ...)`.
+- **Scripts:** Mantener `npm run dev` y `npm i mongoose` para desarrollo y funcionamiento de la BD.
+
+Si necesitas, puedo: instalar `@types/express`, limpiar la URI para usar variables de entorno (`.env`) y mover credenciales a `process.env` para seguridad. ¿Quieres que lo haga ahora?
+
 **Migración a TypeScript y explicación de `tsconfig.json`:**
 
 1) Pasos realizados para la migración a TypeScript

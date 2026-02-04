@@ -1,17 +1,10 @@
 import {Router} from 'express';
 
 const router = Router();
+// autenticacion y registro de users
 
-// routing
-router.get('/', (req, res) => {
-  res.send('Hello World!Typescript');
-});
+router.post('/auth/register', (req, res) => {
+  console.log(req.body);
+})
 
-router.get('/us', (req, res) => {
-  res.send('Us');
-});
-
-router.get('/journal', (req, res) => {
-  res.send('Hello Journal!');
-});
 export default router;
