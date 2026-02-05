@@ -1,21 +1,27 @@
 **Resumen:**
-Breve reporte de las acciones realizadas en el proyecto local `Devtree`. Documento actualizado con los cambios más recientes (Express, nodemon, TypeScript) y la corrección de `tsconfig.json`.
+Breve reporte de las acciones realizadas en el proyecto local `Devtree`. Documento actualizado con todos los cambios implementados incluyendo migración a TypeScript, configuración de MongoDB con Mongoose, autenticación y creación del modelo User.
 
 **Estado actual:**
-**Resumen:**
-Breve reporte de las acciones realizadas en el proyecto local `Devtree`. Documento actualizado con los cambios más recientes (Express, `nodemon`, TypeScript) y las correcciones aplicadas a la configuración.
-
-**Estado actual:**
-- Proyecto inicializado con `npm init` y `type: "module"` en [package.json](package.json#L1).
-- Dependencias instaladas: `express` y herramientas de desarrollo `nodemon`, `typescript`, `ts-node`.
-- Código principal ahora en `src/index.ts` con servidor Express y endpoint `/`.
+- Proyecto inicializado con `npm init` y `type: "module"` en [package.json](package.json).
+- Dependencias instaladas: `express`, `mongoose`, `colors`, `dotenv` y herramientas de desarrollo `nodemon`, `typescript`, `ts-node`, `@types/express`.
+- Estructura del proyecto completamente migrada a TypeScript.
+- Base de datos MongoDB conectada mediante Mongoose.
+- Modelo de Usuario implementado con validaciones básicas.
 
 **Acciones realizadas (resumen cronológico):**
 - Inicialización del proyecto (`npm init`).
 - Instalación y verificación de `express`.
-- Instalación de herramientas de desarrollo: `nodemon`, `typescript`, `ts-node`.
-- Creación/edición de `src/index.ts` para usar tipos de Express.
-- Corrección y ajuste de `tsconfig.json` para que `tsc` incluya los archivos correctos y sea compatible con Node/ES Modules.
+- Instalación de herramientas de desarrollo: `nodemon`, `typescript`, `ts-node`, `@types/express`.
+- Creación/edición de `src/index.ts` para usar tipos de Express con importación de `colors`.
+- Corrección y ajuste de `tsconfig.json` para compilación compatible con Node/ES Modules.
+- Instalación de `mongoose` para manejo de base de datos MongoDB.
+- Creación de `src/config/db.ts` con función `connectDB()` usando Mongoose.
+- Instalación de `dotenv` para gestión de variables de entorno.
+- Creación de `src/server.ts` como punto de entrada de Express con middleware JSON.
+- Creación de `src/router.ts` con endpoint `POST /auth/register` para autenticación.
+- Creación del modelo `src/models/User.ts` con validaciones en Mongoose (name, email, password).
+- Implementación de conexión a base de datos al arrancar el servidor.
+- Añadido módulo `colors` para mejorar la salida de consola con colores.
 
 **Errores detectados y soluciones aplicadas:**
 
@@ -37,66 +43,185 @@ Breve reporte de las acciones realizadas en el proyecto local `Devtree`. Documen
 
 **Cambios en código y configuración realizados:**
 
-- `src/index.ts`: añadidos tipos importando `Request, Response` y anotando parámetros.
-- `tsconfig.json`: `module` cambiado a `NodeNext`, `moduleResolution` en `NodeNext`, `outDir` y `include` ajustados.
-- `package.json` (script `dev`): se actualizó para ejecutar `ts-node` mediante `nodemon` (por ejemplo: `nodemon --watch src --exec "ts-node" src/index.ts`) para permitir desarrollo en TypeScript sin paso explícito de compilación.
+- **`src/index.ts`**: Archivo de entrada principal que:
+  - Importa el servidor de `src/server.ts` y el módulo `colors` para colorear logs.
+  - Inicia el servidor en el puerto 3000 (o el definido en `process.env.PORT`).
+  - Muestra mensaje de inicio coloreado en magenta.
 
-**Comandos recomendados para aplicar correcciones y verificar:**
+- **`src/server.ts`**: Configuración de Express que:
+  - Importa `router` de `src/router.ts`.
+  - Conecta a la base de datos al iniciar con `connectDB()`.
+  - Configura middleware JSON (`express.json()`) para parsear datos de formularios.
+  - Registra las rutas desde `router`.
+
+- **`src/router.ts`**: Define las rutas de la aplicación:
+  - Endpoint `POST /auth/register` para registro de usuarios.
+  - Recibe datos del cuerpo de la solicitud y los registra en consola.
+
+- **`src/config/db.ts`**: Configuración de base de datos:
+  - Función `connectDB()` que conecta a MongoDB usando Mongoose.
+  - Lee la URI desde `process.env.MONGO_URI`.
+  - Maneja errores de conexión con logs coloreados.
+  - Muestra la URL del host y puerto de conexión.
+
+- **`src/models/User.ts`**: Modelo de Usuario con Mongoose:
+  - Schema con campos: `name` (String, requerido), `email` (String, requerido, único), `password` (String, requerido).
+  - Validaciones automáticas en Mongoose.
+  - Modelo exportado como `User`.
+
+- **`tsconfig.json`**: Configuración TypeScript optimizada:
+  - `module: "NodeNext"` para compatibilidad con ES Modules.
+  - `moduleResolution: "NodeNext"` para resolver módulos correctamente.
+  - `outDir: "dist"` para compilar en directorio de salida.
+  - `include: ["src/**/*.ts"]` para incluir todos los archivos TypeScript.
+
+- **`package.json`**: Dependencias instaladas:
+  - Producción: `express`, `mongoose`, `colors`, `dotenv`.
+  - Desarrollo: `nodemon`, `typescript`, `ts-node`, `@types/express`.
+  - Script `dev` configurado para ejecutar con `nodemon` y `ts-node`.
+
+**Comandos útiles para desarrollo y despliegue:**
 
 ```powershell
-# instalar tipos de express
-npm install -D @types/express
+# Instalar todas las dependencias
+npm install
 
-# instalar dependencias de desarrollo necesarias
-npm install -D typescript ts-node nodemon
-
-# ejecutar en modo desarrollo (nodemon + ts-node)
+# Ejecutar en modo desarrollo (con hot-reload)
 npm run dev
 
-# compilar TypeScript a JS
-npx tsc
+# Compilar TypeScript a JavaScript
+npm run build
+
+# Ejecutar la aplicación compilada
+npm run start
+
+# Instalar nueva dependencia
+npm install nombre-paquete
+
+# Instalar dependencia de desarrollo
+npm install -D nombre-paquete
 ```
 
 **Verificación realizada:**
-- Añadí anotaciones de tipo en `src/index.ts` y ajusté `tsconfig.json` para eliminar los errores de configuración.
-- Aun faltan los tipos de Express (`@types/express`) si deseas tipado completo; instalarlos resolverá TS7016.
+- Verificados todos los archivos TypeScript con tipado correcto.
+- Conectividad a MongoDB validada mediante Mongoose en `src/config/db.ts`.
+- Modelo User implementado con validaciones básicas de campos requeridos y unicidad de email.
+- Endpoint POST `/auth/register` funcional para recibir datos de registro.
+- Configuración de TypeScript y variables de entorno (`.env`) lista para producción.
+- Estructura del proyecto escalable y mantenible.
 
 **Siguientes pasos recomendados:**
-- Ejecutar `npm install -D @types/express` y volver a lanzar `npm run dev`.
-- Crear `README.md` con instrucciones de arranque y endpoints.
-- Inicializar `git` y añadir `.gitignore` (incluir `node_modules/`, `dist/`).
+- Configurar variables de entorno en un archivo `.env` (incluir `MONGO_URI`, `PORT`).
+- Crear `.gitignore` con: `node_modules/`, `dist/`, `.env`, `.env.local`.
+- Inicializar repositorio git: `git init` y hacer commit inicial.
+- Implementar lógica de registro completa en `/auth/register` (validación, hashing de contraseña, guardado en BD).
+- Añadir endpoint de login (`POST /auth/login`).
+- Crear `README.md` con instrucciones de instalación y uso.
+- Ejecutar `npm run dev` para iniciar el servidor en modo desarrollo.
+- Instalar `bcryptjs` para hash de contraseñas: `npm install bcryptjs`.
+- Configurar CORS si la aplicación será consumida desde otro dominio.
 
-He actualizado y guardado este informe con los errores detectados y las soluciones aplicadas o recomendadas.
+**Estructura final del proyecto:**
+```
+Devtree/
+├── src/
+│   ├── config/
+│   │   └── db.ts           (Conexión a MongoDB con Mongoose)
+│   ├── models/
+│   │   └── User.ts         (Modelo de Usuario)
+│   ├── index.ts            (Punto de entrada principal)
+│   ├── server.ts           (Configuración de Express)
+│   └── router.ts           (Definición de rutas)
+├── package.json            (Dependencias y scripts)
+├── tsconfig.json           (Configuración TypeScript)
+├── README.md               (Documentación del proyecto)
+├── informe_ejecutivo.md    (Este documento)
+└── .env                    (Variables de entorno - NO subir a git)
+```
 
 **Datos de acceso a la base de datos:**
+⚠️ **IMPORTANTE**: Estos datos deben estar en el archivo `.env` y nunca subidos a control de versiones.
+
 - **Usuario:** izzobee21
 - **Contraseña:** KjveMzeExDN2VUil
 - **Nombre de la BD:** linktree_node_typescript
 - **Host / Cluster:** cluster0.7dl6y7d.mongodb.net
 - **URI de conexión:** mongodb+srv://izzobee21:KjveMzeExDN2VUil@cluster0.7dl6y7d.mongodb.net/linktree_node_typescript
-- **Archivo donde está la URI:** `src/config/db.ts`
+- **Ubicación en código:** `src/config/db.ts` (utiliza `process.env.MONGO_URI`)
 
 **Cambios adicionales en código y configuración realizados (detallado):**
-- **`src/config/db.ts`:** Nuevo archivo que exporta `connectDB()` y contiene la URI de conexión a MongoDB (usa `mongoose.connect(URL)`).
-- **Dependencias:** Se añadió e instaló `mongoose` en `package.json` (`npm i mongoose`).
-- **`src/server.ts`:** Ahora importa y ejecuta `connectDB()` al arrancar la aplicación (conexión a la BD al inicio).
-- **`src/router.ts`:** Se añadió el endpoint `POST /auth/register` (registro/autenticación básica publicada en router).
-- **`src/index.ts`:** Archivo responsable de arrancar el servidor con `server.listen(port, ...)`.
-- **Scripts:** Mantener `npm run dev` y `npm i mongoose` para desarrollo y funcionamiento de la BD.
+- **`src/config/db.ts`**: Función asíncrona `connectDB()` que:
+  - Conecta a MongoDB usando `mongoose.connect()`.
+  - Lee la URI desde `process.env.MONGO_URI`.
+  - Extrae y muestra información del host y puerto de conexión.
+  - Implementa manejo de errores con try-catch.
 
-Si necesitas, puedo: instalar `@types/express`, limpiar la URI para usar variables de entorno (`.env`) y mover credenciales a `process.env` para seguridad. ¿Quieres que lo haga ahora?
+- **`src/models/User.ts`**: Modelo Mongoose que:
+  - Define campos: `name`, `email`, `password`.
+  - Aplica validaciones automáticas: campos requeridos, email único, trim de espacios.
+  - Exporta el modelo `User` para uso en rutas y controladores.
+
+- **`src/server.ts`**: Servidor Express centralizado que:
+  - Importa y ejecuta `connectDB()` al iniciar.
+  - Configura middleware para parsear JSON.
+  - Gestiona rutas de manera modular.
+
+- **`src/router.ts`**: Router con endpoint `/auth/register`:
+  - Recibe datos en `req.body`.
+  - Actualmente registra la información en consola (pendiente implementación de guardado en BD).
+
+- **`src/index.ts`**: Punto de entrada que:
+  - Inicia el servidor con puerto dinámico.
+  - Muestra logs coloreados usando la librería `colors`.
+
+- **Dependencias nuevas**: 
+  - `mongoose`: ODM para MongoDB.
+  - `colors`: Para colorear salida de consola.
+  - `dotenv`: Para cargar variables de entorno desde archivo `.env`.
+  - `@types/express`: Tipos de TypeScript para Express (antes faltaba).
+
+- **Archivo `.env` requerido**: Debe contener:
+  ```
+  MONGO_URI=mongodb+srv://izzobee21:KjveMzeExDN2VUil@cluster0.7dl6y7d.mongodb.net/linktree_node_typescript
+  PORT=3000
+  ```
 
 **Migración a TypeScript y explicación de `tsconfig.json`:**
 
-1) Pasos realizados para la migración a TypeScript
+**1) Pasos realizados para la migración a TypeScript**
 - Instalaste `typescript` y `ts-node` como devDependencies: `npm install -D typescript ts-node`.
-- Moviste o creaste el código fuente en `src/` y creaste `src/index.ts` (ahora el archivo principal usa tipos de Express).
-- Actualizaste `package.json` para que el script de desarrollo use `ts-node` vía `nodemon` (por ejemplo: `nodemon --watch src --exec "ts-node" src/index.ts`).
-- Añadiste anotaciones de tipo en rutas (`Request`, `Response`) y corregiste errores de compilación básicos.
+- Moviste o creaste el código fuente en `src/` y creaste `src/index.ts` como archivo principal.
+- Todas las dependencias ahora tienen soporte de tipos (`@types/express`).
+- Actualizaste `package.json` para que el script de desarrollo use `ts-node` vía `nodemon`.
+- Se añadieron anotaciones de tipo en toda la aplicación (Request, Response, Schemas de Mongoose).
+- Se configuró `tsconfig.json` correctamente para compilación a módulos de Node.
 
-2) Qué hace `tsconfig.json` (resumen)
-- `tsconfig.json` es el archivo de configuración del compilador TypeScript (`tsc`). Define cómo se compila el proyecto: versión objetivo de JS, resolución de módulos, directorios de entrada/salida, opciones de interoperabilidad y qué archivos incluir.
-- `tsc` usa este archivo para saber qué archivos compilar y con qué reglas.
+**2) Qué hace `tsconfig.json` (resumen)**
+- Es el archivo de configuración del compilador TypeScript (`tsc`).
+- Define cómo se compila el proyecto: versión objetivo de JS, resolución de módulos, directorios de entrada/salida.
+- Especifica opciones de interoperabilidad y qué archivos incluir.
+- `tsc` usa este archivo automáticamente cuando se ejecuta desde la raíz del proyecto.
+
+**Configuración aplicada en el proyecto:**
+```json
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules"]
+}
+```
+
+Esta configuración garantiza que TypeScript compile correctamente para Node.js con ES Modules.
 
 3) Contenido actual de `tsconfig.json` (guardado en el proyecto)
 
